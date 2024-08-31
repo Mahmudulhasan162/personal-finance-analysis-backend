@@ -26,6 +26,15 @@ app.use(express.json());
       try {
         await client.connect();
 
+        const database = client.db('financeTrackerDB');
+        const incomeCollection = database.collection('incomes');
+
+        app.post('/api/income', async(req, res) => {
+            const incomeData = req.body;
+            const result = await incomeCollection.insertOne(incomeData)
+            res.send(result)
+            console.log(`New income entry created with the following id: ${result.insertedId}`);
+        });
         
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
